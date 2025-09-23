@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Plataforma de Video</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      background: white;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .form-box {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+      width: 320px;
+      background: white;
+    }
+    input {
+      display: block;
+      margin: 6px 0 12px;
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .feed-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .video-card {
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+    .video-card video {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .logout-btn {
+      margin: 20px 0;
+      padding: 8px 16px;
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 style="margin:0;">VideoApp</h1>
+    <img src="/images/image.png" alt="Logo" style="height:32px;vertical-align:middle;margin-left:10px;">
+  </header>
+  <div class="feed-container">
+    <h2 id="bienvenida"></h2>
+    <form id="formSubirVideo" enctype="multipart/form-data" class="form-box">
+      <h3>Subir video</h3>
+      <input type="text" id="tituloVideo" placeholder="Título" required>
+      <input type="text" id="descripcionVideo" placeholder="Descripción">
+      <input type="text" id="etiquetaVideo" placeholder="Etiqueta">
+      <input type="file" id="archivoVideo" accept="video/*" required>
+      <button type="submit">Subir</button>
+    </form>
+    <div id="feedVideos"></div>
+    <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+  </div>
+  <script>
+    // Mostrar bienvenida
+    const nombre = localStorage.getItem('nombre');
+    if (!nombre) {
+      window.location.href = '/static/index.html';
+    } else {
+      document.getElementById('bienvenida').textContent = "Bienvenido, " + nombre + " 🎉";
+    }
+
+    // Subir video
+    document.getElementById('formSubirVideo').onsubmit = async function(e) {
+      e.preventDefault();
+      const titulo = document.getElementById('tituloVideo').value;
+      const descripcion = document.getElementById('descripcionVideo').value;
+      const etiqueta = document.getElementById('etiquetaVideo').value;
+      const archivo = document.getElementById('archivoVideo').files[0];
+      const usuarioId = localStorage.getItem('usuarioId');
+      const formData = new FormData();
+      formData.append('titulo', titulo);
+      formData.append('descripcion', descripcion);
+      formData.append('etiqueta', etiqueta);
+      formData.append('file', archivo);
+      formData.append('id_usuario', usuarioId);
+      const res = await fetch('/upload_video', {
+        method: 'POST',
+        body: formData
+      });
+      if (res.ok) {
+        alert('Video subido ✅');
+        cargarFeed();
+        document.getElementById('formSubirVideo').reset();
+      } else {
+        alert('Error al subir video ❌');
+      }
+    };
+
+    // Cargar feed
+    async function cargarFeed() {
+      const usuarioId = localStorage.getItem('usuarioId');
+      const res = await fetch(`/feed_videos/${usuarioId}`);
+      if (res.ok) {
+        const videos = await res.json();
+        let html = '<h3>Feed de videos</h3>';
+        if (videos.length === 0) {
+          html += '<p>No hay videos para mostrar.</p>';
+        } else {
+          videos.forEach(v => {
+            html += `<div class="video-card">
+              <h4>${v.titulo}</h4>
+              <p><strong>Subido por:</strong> ${v.usuario}</p>
+              <p><strong>Descripción:</strong> ${v.descripcion}</p>
+              <p><strong>Etiqueta:</strong> ${v.etiqueta}</p>
+              <video id="video_${v.id_video}" controls>
+                <source src="/${v.ruta}" type="video/mp4">
+              </video>`;
+            if (v.usuario === localStorage.getItem('nombre')) {
+              html += `<br><button onclick="eliminarVideo('${v.id_video}')">Eliminar</button>`;
+            }
+            html += `</div>`;
+          });
+        }
+        document.getElementById('feedVideos').innerHTML = html;
+      }
+    }
+
+    // Eliminar video
+    async function eliminarVideo(id_video) {
+      const usuarioId = localStorage.getItem('usuarioId');
+      if (!confirm('¿Seguro que deseas eliminar este video?')) return;
+      const res = await fetch(`/videos/${id_video}?id_usuario=${usuarioId}`, { method: 'DELETE' });
+      if (res.ok) {
+        alert('Video eliminado');
+        cargarFeed();
+      } else {
+        const err = await res.json().catch(()=>({detail:'Error'}));
+        alert('No se pudo eliminar: ' + (err.detail || res.status));
+      }
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("usuarioId");
+      localStorage.removeItem("nombre");
+      window.location.href = '/static/index.html';
+    }
+
+    // Inicializar feed
+    cargarFeed();
+  </script>
+</body>
+</html>
