@@ -75,6 +75,6 @@ La solución está diseñada para ser segura, escalable y con baja latencia.
 
 # ⚙️ Métodos de ejecución
 ### 1. Clonar el repositorio
-git clone https://github.com/ISCOUTB/AS_microlearning_API.git
-cd AS_microlearning_API
+`git clone https://github.com/ISCOUTB/AS_microlearning_API.git`
+`cd AS_microlearning_API`
 
