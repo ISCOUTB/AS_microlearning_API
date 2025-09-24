@@ -27,7 +27,7 @@ La versión actual está centrada en el backend, las APIs y la arquitectura de p
 
 • APIs abiertas para cliente web/móvil y panel de métricas para docentes.
 
-## 👥 Stakeholders
+### 👥 Stakeholders
 
 ∙ Usuarios: consumen y reaccionan a micro-contenidos.
 
@@ -37,11 +37,11 @@ La versión actual está centrada en el backend, las APIs y la arquitectura de p
 
 • Área TI/Operaciones: despliegue y monitoreo.
 
-🏗️ Arquitectura
+###🏗️ Arquitectura
 
 La solución está diseñada para ser segura, escalable y con baja latencia.
 
-Componentes principales
+#### Componentes principales
 
 • Backend API: feed, reproducción, subida y métricas.
 
@@ -55,20 +55,20 @@ Componentes principales
 
 • Panel de métricas/BI: consultas y reportes.
 
-Flujos básicos
+#### Flujos básicos
 
-Subida: validación → bucket de storage → DB con ID cifrado.
+• Subida: validación → bucket de storage → DB con ID cifrado.
 
-Reproducción: API → lista paginada → URL firmada para CDN.
+• Reproducción: API → lista paginada → URL firmada para CDN.
 
-Métricas: API → contador Redis → sync por lotes a DB.
+• Métricas: API → contador Redis → sync por lotes a DB.
 
-🔐 Decisiones clave
+### 🔐 Decisiones clave
 
-No se exponen rutas de archivos → solo IDs cifrados y URLs firmadas.
+• No se exponen rutas de archivos → solo IDs cifrados y URLs firmadas.
 
-Se registran solo likes y vistas (sin métricas avanzadas).
+• Se registran solo likes y vistas (sin métricas avanzadas).
 
-Todos los usuarios actuales son generales (sin roles diferenciados aún).
+• Todos los usuarios actuales son generales (sin roles diferenciados aún).
 
-Redis se usa como fuente en tiempo real y DB como histórico persistente.
+• Redis se usa como fuente en tiempo real y DB como histórico persistente.
