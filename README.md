@@ -1,41 +1,41 @@
 # AS_microlearning_API
-📚 Plataforma Universitaria de Micro-learning
+#📚 Plataforma Universitaria de Micro-learning
 
 Versión: Actualizada
 Basado en: arc42 – Documentación arquitectónica
 
-🚀 Introducción
+##🚀 Introducción
 
 Este proyecto implementa el backend de una plataforma universitaria de micro-learning.
 El sistema permite la subida y consumo de micro-contenidos (videos cortos, imágenes, tarjetas), con un feed infinito estilo TikTok/Instagram y recolección de métricas básicas:
 
-✅ Vistas
+• ✅ Vistas
 
-✅ Likes
+• ✅ Likes
 
 La versión actual está centrada en el backend, las APIs y la arquitectura de persistencia/escalabilidad.
 
-🎯 Objetivos principales
+###🎯 Objetivos principales
 
-Subida, almacenamiento y catalogación de micro-contenidos.
+• Subida, almacenamiento y catalogación de micro-contenidos.
 
-Consumo tipo scroll con reproducción eficiente.
+• Consumo tipo scroll con reproducción eficiente.
 
-Registro mínimo de métricas: vistas y likes.
+• Registro mínimo de métricas: vistas y likes.
 
-Identificación de videos por ID único cifrado.
+• Identificación de videos por ID único cifrado.
 
-APIs abiertas para cliente web/móvil y panel de métricas para docentes.
+• APIs abiertas para cliente web/móvil y panel de métricas para docentes.
 
-👥 Stakeholders
+##👥 Stakeholders
 
-Usuarios: consumen y reaccionan a micro-contenidos.
+∙ Usuarios: consumen y reaccionan a micro-contenidos.
 
-Docentes: suben material y consultan métricas.
+• Docentes: suben material y consultan métricas.
 
-Equipo de desarrollo: mantiene la plataforma.
+• Equipo de desarrollo: mantiene la plataforma.
 
-Área TI/Operaciones: despliegue y monitoreo.
+• Área TI/Operaciones: despliegue y monitoreo.
 
 🏗️ Arquitectura
 
@@ -43,17 +43,17 @@ La solución está diseñada para ser segura, escalable y con baja latencia.
 
 Componentes principales
 
-Backend API: feed, reproducción, subida y métricas.
+• Backend API: feed, reproducción, subida y métricas.
 
-Storage/CDN: blobs multimedia con URLs firmadas temporalmente.
+• Storage/CDN: blobs multimedia con URLs firmadas temporalmente.
 
-Redis: contadores en memoria (likes, vistas) → sincronización a BD.
+• Redis: contadores en memoria (likes, vistas) → sincronización a BD.
 
-DB persistente (PostgreSQL/MongoDB): metadatos, usuarios, métricas históricas.
+• DB persistente (PostgreSQL/MongoDB): metadatos, usuarios, métricas históricas.
 
-Jobs de sincronización: trasladan contadores de Redis a DB.
+• Jobs de sincronización: trasladan contadores de Redis a DB.
 
-Panel de métricas/BI: consultas y reportes.
+• Panel de métricas/BI: consultas y reportes.
 
 Flujos básicos
 
