@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+sqlalchemy
+hashids
+psycopg2-binary
+pg8000

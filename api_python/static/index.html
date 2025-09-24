@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Plataforma de Video</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background: white;
+      border-bottom: 1px solid #dbdbdb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #262626;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    }
+
+    .form-box {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+      width: 320px;
+      background: white;
+    }
+
+    input {
+      display: block;
+      margin: 6px 0 12px;
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <header style="display:flex;align-items:center;justify-content:center;gap:10px;">
+    <h1 style="margin:0;">VideoApp</h1>
+    <img src="/images/image.png" alt="Logo" style="height:32px;vertical-align:middle;">
+  </header>
+  <hr>
+
+  <!-- LOGIN / REGISTRO -->
+  <div id="auth" class="">
+    <div class="form-box">
+      <h2>Crear cuenta</h2>
+      <input type="text" id="regNombre" placeholder="Nombre">
+      <input type="email" id="regCorreo" placeholder="Correo">
+      <input type="password" id="regContrasena" placeholder="Contraseña">
+      <button onclick="crearUsuario()">Registrarse</button>
+    </div>
+    <div class="form-box">
+      <h2>Iniciar sesión</h2>
+      <input type="email" id="loginCorreo" placeholder="Correo">
+      <input type="password" id="loginContrasena" placeholder="Contraseña">
+      <button onclick="login()">Entrar</button>
+    </div>
+  </div>
+
+  <script>
+    async function crearUsuario() {
+      const nombre = document.getElementById('regNombre').value;
+      const correo = document.getElementById('regCorreo').value;
+      const contrasena = document.getElementById('regContrasena').value;
+
+      const res = await fetch('/usuarios', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, correo, contrasena })
+      });
+
+      if (res.ok) {
+        alert("Usuario creado ✅, ahora inicia sesión");
+      } else {
+        const err = await res.json().catch(()=>({detail:"error"}));
+        alert("Error al registrarse ❌: " + (err.detail || res.status));
+      }
+    }
+
+    async function login() {
+      const correo = document.getElementById('loginCorreo').value;
+      const contrasena = document.getElementById('loginContrasena').value;
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correo, contrasena })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem("usuarioId", data.id_usuario);
+        localStorage.setItem("nombre", data.nombre);
+        window.location.href = "/static/plataforma.html";
+      } else {
+        const err = await res.json().catch(()=>({detail:"Credenciales incorrectas"}));
+        alert("Error en login ❌: " + (err.detail || res.status));
+      }
+    }
+  </script>
+</body>
+</html>
