@@ -37,7 +37,7 @@ La versión actual está centrada en el backend, las APIs y la arquitectura de p
 
 • Área TI/Operaciones: despliegue y monitoreo.
 
-###🏗️ Arquitectura
+### 🏗️ Arquitectura
 
 La solución está diseñada para ser segura, escalable y con baja latencia.
 
@@ -72,3 +72,8 @@ La solución está diseñada para ser segura, escalable y con baja latencia.
 • Todos los usuarios actuales son generales (sin roles diferenciados aún).
 
 • Redis se usa como fuente en tiempo real y DB como histórico persistente.
+
+# ⚙️ Métodos de ejecución
+## 1. Clonar el repositorio
+git clone https://github.com/<tu-usuario>/<tu-repo>.git
+cd <tu-repo>
