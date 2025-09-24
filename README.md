@@ -74,6 +74,6 @@ La solución está diseñada para ser segura, escalable y con baja latencia.
 • Redis se usa como fuente en tiempo real y DB como histórico persistente.
 
 # ⚙️ Métodos de ejecución
-## 1. Clonar el repositorio
+### 1. Clonar el repositorio
 git clone https://github.com/<tu-usuario>/<tu-repo>.git
 cd <tu-repo>
