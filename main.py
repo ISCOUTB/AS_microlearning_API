@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
 from sqlalchemy.orm import Session
-import models, schemas
+from sqlalchemy import and_
+import models, schemas, crud
 from database import SessionLocal, engine
 from typing import List
 from models import UsuarioApp, Video, Interaccion, Etiqueta, Like
+from sqlalchemy import Column, Integer, UUID
 import os
 
 # Crear tablas si no existen
@@ -110,15 +112,26 @@ def feed_videos(id_usuario: int, db: Session = Depends(get_db)):
     for v in videos:
         usuario = db.query(UsuarioApp).filter(UsuarioApp.id_usuario == v.id_usuario).first()
         etiqueta = db.query(Etiqueta).filter(Etiqueta.id_video == v.id_video).first()
+        
+        # Contar likes
+        total_likes = db.query(Like).filter(Like.id_video == v.id_video).count()
+        # Verificar si este usuario ya dio like
+        liked = db.query(Like).filter(
+            Like.id_video == v.id_video, Like.id_usuario == id_usuario
+        ).first() is not None
+
         feed.append({
             "id_video": str(v.id_video),
             "titulo": v.titulo,
             "descripcion": v.descripcion,
             "ruta": v.ruta,
             "usuario": usuario.nombre if usuario else "Desconocido",
-            "etiqueta": etiqueta.nombre if etiqueta else ""
+            "etiqueta": etiqueta.nombre if etiqueta else "",
+            "likes": total_likes or 0,
+            "liked": liked
         })
     return feed
+
 
 @app.delete("/videos/{id_video}")
 def eliminar_video(id_video: str, id_usuario: int, db: Session = Depends(get_db)):
@@ -170,3 +183,23 @@ def crear_etiqueta(etiqueta: schemas.EtiquetaCreate, db: Session = Depends(get_d
     db.commit()
     db.refresh(nueva_etiqueta)
     return schemas.EtiquetaResponse.from_orm(nueva_etiqueta)
+
+
+@app.post("/videos/{id_video}/like")
+def toggle_like(id_video: str, id_usuario: int, db: Session = Depends(get_db)):
+    like = db.query(Like).filter_by(id_usuario=id_usuario, id_video=id_video).first()
+    
+    if like:
+        db.delete(like)
+        db.commit()
+        liked = False
+    else:
+        nuevo_like = Like(id_usuario=id_usuario, id_video=id_video)
+        db.add(nuevo_like)
+        db.commit()
+        liked = True
+
+    total_likes = db.query(Like).filter_by(id_video=id_video).count() or 0
+
+    return {"likes": total_likes, "liked": liked}
+
