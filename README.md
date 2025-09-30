@@ -77,7 +77,7 @@ La solución está diseñada para ser segura, escalable y con baja latencia.
 ### 1. Clonar el repositorio
 `git clone https://github.com/ISCOUTB/AS_microlearning_API.git`
 `cd AS_microlearning_API`
-### 3. Variables de entorno
+### 2. Variables de entorno
 
 Crea un archivo `.env` con al menos:
 
