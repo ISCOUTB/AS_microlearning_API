@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql+pg8000://postgres:cNFtPnwvOAUwtaEmxpxLFgJkxBSwzlxK@interchange.proxy.rlwy.net:20795/railway"
+DATABASE_URL = "postgresql+pg8000://postgres:zpWTKHuHkMKPQOilQrlDgetmhzQUcrgT@interchange.proxy.rlwy.net:59550/railway"
 
 # Crear el motor
 engine = create_engine(DATABASE_URL, echo=True)
